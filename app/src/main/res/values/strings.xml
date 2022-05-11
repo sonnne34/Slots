@@ -2,9 +2,13 @@
     <string name="app_name">slots</string>
     <string name="play">Play</string>
     <string name="lottery">Lottery</string>
-    <string name="your_coins_n">Your coins: N</string>
+    <string name="your_coins_n">Your coins: %s</string>
     <string name="img_slot">🎰</string>
     <string name="bet">Bet</string>
     <string name="spin">Spin</string>
     <string name="menu">Menu</string>
+    <string name="description_img_icon_app">Icon App</string>
+    <string name="btn_lottery_q">\?</string>
+    <string name="your_reward_n_coins">Your reward: %s coins</string>
+    <string name="lottery_txt">Lottery:</string>
 </resources>

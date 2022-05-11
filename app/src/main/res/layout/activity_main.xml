@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    android:gravity="center_horizontal"
     android:background="@color/primary_light"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/img_icon"
-        android:layout_marginTop="70dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/icon"/>
+        android:layout_marginTop="70dp"
+        android:background="@drawable/icon"
+        android:contentDescription="@string/description_img_icon_app" />
 
     <TextView
         android:id="@+id/txt_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="26sp"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:textColor="@color/accent"
         android:layout_margin="40dp"
-        android:text="@string/app_name"/>
+        android:gravity="center"
+        android:text="@string/app_name"
+        android:textColor="@color/accent"
+        android:textSize="26sp" />
 
     <Button
         android:id="@+id/btn_play"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/accent"
         android:text="@string/play"
-        android:textColor="@color/icons"/>
+        android:textColor="@color/icons" />
 
     <Button
         android:id="@+id/btn_lottery"
@@ -43,17 +43,17 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/accent"
         android:text="@string/lottery"
-        android:textColor="@color/icons"/>
+        android:textColor="@color/icons" />
 
     <TextView
         android:id="@+id/txt_coins"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
         android:layout_gravity="center"
+        android:layout_margin="30dp"
         android:gravity="center"
+        android:text="@string/your_coins_n"
         android:textColor="@color/primary_text"
-        android:layout_margin="16dp"
-        android:text="@string/your_coins_n"/>
+        android:textSize="18sp" />
 
 </LinearLayout>

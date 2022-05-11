@@ -256,7 +256,7 @@
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/primary_dark"
             android:text="@string/spin"
-            android:textColor="@color/icons" />
+            android:textColor="@color/icons"/>
     </LinearLayout>
 
     <Button
