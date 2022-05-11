@@ -67,7 +67,6 @@ class GameActivity : AppCompatActivity() {
             buttonBet = btnBet
             buttonSpin = btnSpin
             buttonMenu = btnMenu
-
         }
     }
 
@@ -78,14 +77,12 @@ class GameActivity : AppCompatActivity() {
                 timer(slot4, slot5, slot6, 110)
                 timer(slot7, slot8, slot9, 100)
             }
-
         }
 
         buttonMenu.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-
         buttonBet.setOnClickListener {
 
         }
@@ -98,7 +95,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun anim(tv: TextView, count: Long) {
-        val animation: Animation = AlphaAnimation(0.0f, 1.0f)
+        val animation: Animation = AlphaAnimation(0.3f, 1.0f)
         with(animation) {
             duration = count
             startOffset = 50
@@ -124,20 +121,23 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-
                 clearAnim(tvSlot1)
                 clearAnim(tvSlot2)
                 clearAnim(tvSlot3)
 
-                val toast = Toast.makeText(
-                    this@GameActivity,
-                    "Your winnings: N",
-                    Toast.LENGTH_SHORT
-                )
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
+                showToast()
             }
         }
         timer.start()
+    }
+
+    private fun showToast(){
+        val toast = Toast.makeText(
+            this@GameActivity,
+            "Your winnings: N",
+            Toast.LENGTH_SHORT
+        )
+        toast.setGravity(Gravity.CENTER, 0, 0)
+        toast.show()
     }
 }
