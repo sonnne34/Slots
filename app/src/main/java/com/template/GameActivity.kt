@@ -3,15 +3,16 @@ package com.template
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.Gravity
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.template.databinding.ActivityGameBinding
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 
 class GameActivity : AppCompatActivity() {
 
@@ -52,7 +53,7 @@ class GameActivity : AppCompatActivity() {
 
     }
 
-    private fun initViewSlots(){
+    private fun initViewSlots() {
         with(binding) {
             slot1 = txtSlot1
             slot2 = txtSlot2
@@ -66,21 +67,17 @@ class GameActivity : AppCompatActivity() {
             buttonBet = btnBet
             buttonSpin = btnSpin
             buttonMenu = btnMenu
+
         }
     }
 
-    private fun onClickListeners(){
+    private fun onClickListeners() {
         buttonSpin.setOnClickListener {
-
-            val timer = object: CountDownTimer(5000, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    startSlotsRandom()
-                }
-                override fun onFinish() {
-                    Toast.makeText(this@GameActivity, "!!!", Toast.LENGTH_LONG).show()
-                }
+            lifecycleScope.launch {
+                timer(slot1, slot2, slot3, 120)
+                timer(slot4, slot5, slot6, 110)
+                timer(slot7, slot8, slot9, 100)
             }
-            timer.start()
 
         }
 
@@ -94,30 +91,53 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun startSlotsRandom(){
-        slot1.text = slotsTextImg.random()
-        slot2.text = slotsTextImg.random()
-        slot3.text = slotsTextImg.random()
-        slot4.text = slotsTextImg.random()
-        slot5.text = slotsTextImg.random()
-        slot6.text = slotsTextImg.random()
-        slot7.text = slotsTextImg.random()
-        slot8.text = slotsTextImg.random()
-        slot9.text = slotsTextImg.random()
-
-        slotsSpin()
+    private fun startSlotsRandom(tvSlot1: TextView, tvSlot2: TextView, tvSlot3: TextView) {
+        tvSlot1.text = slotsTextImg.random()
+        tvSlot2.text = slotsTextImg.random()
+        tvSlot3.text = slotsTextImg.random()
     }
 
-    private fun slotsSpin() {
-        lifecycleScope.launch {
-            generateSlots()
+    private fun anim(tv: TextView, count: Long) {
+        val animation: Animation = AlphaAnimation(0.0f, 1.0f)
+        with(animation) {
+            duration = count
+            startOffset = 50
+            repeatMode = Animation.REVERSE
+            repeatCount = Animation.INFINITE
         }
+        tv.startAnimation(animation)
     }
 
-    private suspend fun generateSlots(){
-        delay(300)
-        startSlotsRandom()
+    private fun clearAnim(tv: TextView) {
+        tv.clearAnimation()
     }
 
+    private fun timer(tvSlot1: TextView, tvSlot2: TextView, tvSlot3: TextView, count: Long) {
 
+        anim(tvSlot1, count)
+        anim(tvSlot2, count)
+        anim(tvSlot3, count)
+
+        val timer = object : CountDownTimer(5000, count) {
+            override fun onTick(millisUntilFinished: Long) {
+                startSlotsRandom(tvSlot1, tvSlot2, tvSlot3)
+            }
+
+            override fun onFinish() {
+
+                clearAnim(tvSlot1)
+                clearAnim(tvSlot2)
+                clearAnim(tvSlot3)
+
+                val toast = Toast.makeText(
+                    this@GameActivity,
+                    "Your winnings: N",
+                    Toast.LENGTH_SHORT
+                )
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+            }
+        }
+        timer.start()
+    }
 }
