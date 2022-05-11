@@ -1,10 +1,17 @@
 package com.template
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.template.databinding.ActivityGameBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.*
 
 class GameActivity : AppCompatActivity() {
 
@@ -12,7 +19,7 @@ class GameActivity : AppCompatActivity() {
         ActivityGameBinding.inflate(layoutInflater)
     }
 
-    private val slots = listOf(
+    private val slotsTextImg = listOf(
         "\uD83D\uDCB0",
         "\uD83C\uDF52",
         "\uD83C\uDF53",
@@ -40,10 +47,7 @@ class GameActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initViewSlots()
-
-        buttonSpin.setOnClickListener {
-            startFirstSlots()
-        }
+        onClickListeners()
 
 
     }
@@ -61,21 +65,59 @@ class GameActivity : AppCompatActivity() {
             slot9 = txtSlot9
             buttonBet = btnBet
             buttonSpin = btnSpin
-            buttonMenu = buttonMenu
+            buttonMenu = btnMenu
+        }
+    }
+
+    private fun onClickListeners(){
+        buttonSpin.setOnClickListener {
+
+            val timer = object: CountDownTimer(5000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    startSlotsRandom()
+                }
+                override fun onFinish() {
+                    Toast.makeText(this@GameActivity, "!!!", Toast.LENGTH_LONG).show()
+                }
+            }
+            timer.start()
+
         }
 
+        buttonMenu.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
+        buttonBet.setOnClickListener {
+
+        }
     }
 
-    private fun startFirstSlots(){
-        slot1.text = slots.random()
-        slot2.text = slots.random()
-        slot3.text = slots.random()
-        slot4.text = slots.random()
-        slot5.text = slots.random()
-        slot6.text = slots.random()
-        slot7.text = slots.random()
-        slot8.text = slots.random()
-        slot9.text = slots.random()
+    private fun startSlotsRandom(){
+        slot1.text = slotsTextImg.random()
+        slot2.text = slotsTextImg.random()
+        slot3.text = slotsTextImg.random()
+        slot4.text = slotsTextImg.random()
+        slot5.text = slotsTextImg.random()
+        slot6.text = slotsTextImg.random()
+        slot7.text = slotsTextImg.random()
+        slot8.text = slotsTextImg.random()
+        slot9.text = slotsTextImg.random()
+
+        slotsSpin()
     }
+
+    private fun slotsSpin() {
+        lifecycleScope.launch {
+            generateSlots()
+        }
+    }
+
+    private suspend fun generateSlots(){
+        delay(300)
+        startSlotsRandom()
+    }
+
 
 }
