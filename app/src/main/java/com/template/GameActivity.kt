@@ -49,8 +49,6 @@ class GameActivity : AppCompatActivity() {
 
         initViewSlots()
         onClickListeners()
-
-
     }
 
     private fun initViewSlots() {
@@ -73,23 +71,57 @@ class GameActivity : AppCompatActivity() {
 
     private fun onClickListeners() {
         buttonSpin.setOnClickListener {
-            lifecycleScope.launch {
-                timer(slot1, slot2, slot3, 120)
-                timer(slot4, slot5, slot6, 110)
-                timer(slot7, slot8, slot9, 100)
-            }
+            startGameSpin()
         }
 
         buttonMenu.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            goMenu()
         }
         buttonBet.setOnClickListener {
 
         }
     }
 
-    private fun startSlotsRandom(tvSlot1: TextView, tvSlot2: TextView, tvSlot3: TextView) {
+    private fun startGameSpin(){
+        lifecycleScope.launch {
+            spinLinesSlots(slot1, slot2, slot3, 120)
+            spinLinesSlots(slot4, slot5, slot6, 110)
+            spinLinesSlots(slot7, slot8, slot9, 100)
+        }
+    }
+
+    private fun spinLinesSlots(
+        tvSlot1: TextView,
+        tvSlot2: TextView,
+        tvSlot3: TextView,
+        count: Long
+    ) {
+
+        anim(tvSlot1, count)
+        anim(tvSlot2, count)
+        anim(tvSlot3, count)
+
+        val timer = object : CountDownTimer(5000, count) {
+            override fun onTick(millisUntilFinished: Long) {
+                slotsTvImageRandom(tvSlot1, tvSlot2, tvSlot3)
+            }
+
+            override fun onFinish() {
+                clearAnim(tvSlot1)
+                clearAnim(tvSlot2)
+                clearAnim(tvSlot3)
+
+                showToast()
+            }
+        }
+        timer.start()
+    }
+
+    private fun slotsTvImageRandom(
+        tvSlot1: TextView,
+        tvSlot2: TextView,
+        tvSlot3: TextView
+    ) {
         tvSlot1.text = slotsTextImg.random()
         tvSlot2.text = slotsTextImg.random()
         tvSlot3.text = slotsTextImg.random()
@@ -110,28 +142,6 @@ class GameActivity : AppCompatActivity() {
         tv.clearAnimation()
     }
 
-    private fun timer(tvSlot1: TextView, tvSlot2: TextView, tvSlot3: TextView, count: Long) {
-
-        anim(tvSlot1, count)
-        anim(tvSlot2, count)
-        anim(tvSlot3, count)
-
-        val timer = object : CountDownTimer(5000, count) {
-            override fun onTick(millisUntilFinished: Long) {
-                startSlotsRandom(tvSlot1, tvSlot2, tvSlot3)
-            }
-
-            override fun onFinish() {
-                clearAnim(tvSlot1)
-                clearAnim(tvSlot2)
-                clearAnim(tvSlot3)
-
-                showToast()
-            }
-        }
-        timer.start()
-    }
-
     private fun showToast() {
         val toast = Toast.makeText(
             this@GameActivity,
@@ -142,4 +152,8 @@ class GameActivity : AppCompatActivity() {
         toast.show()
     }
 
+    private fun goMenu() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
 }
