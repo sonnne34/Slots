@@ -12,9 +12,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.template.databinding.ActivityGameBinding
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
-class GameActivity : AppCompatActivity() {
+class GameActivity  : AppCompatActivity() {
 
     private val binding by lazy {
         ActivityGameBinding.inflate(layoutInflater)
