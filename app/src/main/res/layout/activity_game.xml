@@ -14,8 +14,7 @@
         android:id="@+id/txt_coins_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:padding="10dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/your_coins_n"
         android:textColor="@color/primary_dark"
         android:textSize="22sp" />

@@ -3,6 +3,7 @@ package com.template
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -28,32 +29,28 @@ class LotteryActivity : AppCompatActivity() {
         scoreCoins = coins + rewardCoins
 
         with(binding) {
-            txtYourRewardLottery.isVisible = false
-            btnLotteryOne.setOnClickListener { selectBox() }
-            btnLotteryTwo.setOnClickListener { selectBox() }
-            btnLotteryThree.setOnClickListener { selectBox() }
+            btnLotteryOne.setOnClickListener { selectBox(binding.txtRewardLotteryOne) }
+            btnLotteryTwo.setOnClickListener { selectBox(binding.txtRewardLotteryTwo) }
+            btnLotteryThree.setOnClickListener { selectBox(binding.txtRewardLotteryThree) }
         }
     }
 
-    private fun selectBox() {
+    private fun selectBox(tv: TextView) {
         showRewardDialog()
-        binding.txtYourRewardLottery.text = String.format(
-            application.resources.getString(R.string.your_coins_n),
-            rewardCoins
-        )
-        binding.txtYourRewardLottery.isVisible = true
+        tv.text = rewardCoins.toString()
+        tv.isVisible = true
     }
 
     private fun showRewardDialog() {
-        val dialog = AlertDialog.Builder(this)
-        with(dialog) {
+        AlertDialog.Builder(this).apply {
             setTitle("Wow!")
-            setMessage("Your reward $rewardCoins coins")
+            setMessage("Your reward $rewardCoins coins!")
             setPositiveButton(
                 "claim"
             ) { _, _ ->
                 goMenu()
             }
+            setCancelable(false)
             show()
         }
     }

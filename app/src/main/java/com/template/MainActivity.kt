@@ -50,8 +50,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDialog() {
-        val dialog = AlertDialog.Builder(this)
-        with(dialog) {
+        AlertDialog.Builder(this).apply {
             setTitle("Wow!")
             setMessage("Your reward $rewardCoins coins")
             setPositiveButton(

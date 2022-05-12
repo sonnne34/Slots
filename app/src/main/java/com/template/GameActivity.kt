@@ -94,7 +94,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun goSpin() {
-        if (coins > bet) {
+        if (coins >= bet) {
             coins -= bet
             if (coins >= 0) {
                 tvCoinsDefault()
@@ -137,7 +137,7 @@ class GameActivity : AppCompatActivity() {
                 clearAnim(tvSlot3)
 
                 if (lostLine) {
-                    val rewardCoins = (0..bet * 2).random()
+                    val rewardCoins = (-100..bet * 2).random()
                     showToast("Your reward $rewardCoins coins")
                     coins += rewardCoins
                     tvCoinsDefault()
@@ -155,8 +155,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun anim(tv: TextView, count: Long) {
-        val animation: Animation = AlphaAnimation(0.3f, 1.0f)
-        with(animation) {
+        val animation: Animation = AlphaAnimation(0.3f, 1.0f).apply {
             duration = count
             startOffset = 50
             repeatMode = Animation.REVERSE
@@ -190,14 +189,13 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun showDialogBet() {
-        val dialog = AlertDialog.Builder(this)
-        with(dialog) {
+        AlertDialog.Builder(this).apply {
             setTitle("Bet")
             val input = EditText(this@GameActivity)
             input.hint = "Enter your Bet"
             input.gravity = Gravity.CENTER
             input.inputType = InputType.TYPE_CLASS_NUMBER
-            dialog.setView(input)
+            setView(input)
             setPositiveButton(
                 "Ok"
             ) { _, _ ->
@@ -209,8 +207,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun showDialogGameOver() {
-        val dialog = AlertDialog.Builder(this)
-        with(dialog) {
+        AlertDialog.Builder(this).apply {
             setTitle("Game Over")
             setMessage("Your coins have run out")
             setPositiveButton(
@@ -218,6 +215,7 @@ class GameActivity : AppCompatActivity() {
             ) { _, _ ->
                 goMenu()
             }
+            setCancelable(false)
             show()
         }
     }
