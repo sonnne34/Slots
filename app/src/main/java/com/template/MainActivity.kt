@@ -1,11 +1,12 @@
 package com.template
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.template.databinding.ActivityMainBinding
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,21 +21,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.btnPlay.setOnClickListener {
-            checkCoins()
-        }
+        defaultCoins()
 
-        binding.btnLottery.setOnClickListener {
-            goLottery()
+        with(binding) {
+            btnPlay.setOnClickListener { checkCoins() }
+            btnLottery.setOnClickListener { goLottery() }
+            txtCoins.text = String.format(
+                application.resources.getString(R.string.your_coins_n),
+                coins
+            )
         }
-
-        binding.txtCoins.text = String.format(
-            application.resources.getString(R.string.your_coins_n),
-            coins)
     }
 
-    private fun checkCoins(){
-        if (coins == 0) {
+    private fun defaultCoins() {
+        coins = intent.getIntExtra(COINS, 1000)
+
+        if (coins < 0) {
+            coins = 0
+        }
+    }
+
+    private fun checkCoins() {
+        if (coins <= 0) {
             showDialog()
         } else {
             goGame()
@@ -43,24 +51,51 @@ class MainActivity : AppCompatActivity() {
 
     private fun showDialog() {
         val dialog = AlertDialog.Builder(this)
-        with(dialog){
+        with(dialog) {
             setTitle("Wow!")
             setMessage("Your reward $rewardCoins coins")
             setPositiveButton(
-                "claim") { _, _ ->
+                "claim"
+            ) { _, _ ->
                 coins = rewardCoins
             }
             show()
         }
     }
 
-    private fun goGame(){
+    private fun goGame() {
         val intent = Intent(this, GameActivity::class.java)
-        startActivity(intent)
+        intent.putExtra(COINS, coins)
+        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP))
     }
 
-    private fun goLottery(){
+    private fun goLottery() {
         val intent = Intent(this, LotteryActivity::class.java)
-        startActivity(intent)
+        intent.putExtra(COINS, coins)
+        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP))
+    }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this).apply {
+            setTitle("Confirmation")
+            setMessage("Are you sure you want to quit the App?")
+
+            setPositiveButton("Yes") { _, _ ->
+                finishAffinity()
+                exitProcess(0)
+            }
+
+            setNegativeButton("Oh, no!") { _, _ ->
+                Toast.makeText(
+                    this@MainActivity, "Thank you",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            setCancelable(true)
+        }.create().show()
+    }
+
+    companion object {
+        const val COINS = "COINS"
     }
 }

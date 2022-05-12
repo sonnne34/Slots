@@ -10,5 +10,6 @@
     <string name="description_img_icon_app">Icon App</string>
     <string name="btn_lottery_q">\?</string>
     <string name="your_reward_n_coins">Your reward: %s coins</string>
-    <string name="lottery_txt">Lottery:</string>
+    <string name="your_bet_n">Bet: %s coins</string>
+    <string name="choose_a_box">Choose a box:</string>
 </resources>

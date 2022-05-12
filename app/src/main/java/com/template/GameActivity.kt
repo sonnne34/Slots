@@ -3,16 +3,19 @@ package com.template
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.text.InputType
 import android.view.Gravity
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import com.template.MainActivity.Companion.COINS
 import com.template.databinding.ActivityGameBinding
-import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 class GameActivity : AppCompatActivity() {
 
@@ -26,7 +29,8 @@ class GameActivity : AppCompatActivity() {
         "\uD83C\uDF53",
         "\uD83C\uDF4B",
         "\uD83C\uDF4C",
-        "\uD83C\uDF47"
+        "\uD83C\uDF47",
+        "\uD83C\uDFB0"
     )
 
     private lateinit var slot1: TextView
@@ -43,16 +47,25 @@ class GameActivity : AppCompatActivity() {
     private lateinit var buttonSpin: Button
     private lateinit var buttonMenu: Button
 
+    private lateinit var txtCoins: TextView
+    private lateinit var txtBet: TextView
+
+    private var coins = 1000
+    private var bet = 100
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        initViewSlots()
+        coins = intent.getIntExtra(COINS, 1000)
+
+        initView()
         onClickListeners()
+        tvCoinsDefault()
+        tvBetDefault()
     }
 
-    private fun initViewSlots() {
-
+    private fun initView() {
         with(binding) {
             slot1 = txtSlot1
             slot2 = txtSlot2
@@ -66,36 +79,48 @@ class GameActivity : AppCompatActivity() {
             buttonBet = btnBet
             buttonSpin = btnSpin
             buttonMenu = btnMenu
+            txtCoins = txtCoinsGame
+            txtBet = txtBetGame
         }
     }
 
     private fun onClickListeners() {
-        buttonSpin.setOnClickListener {
-            startGameSpin()
-        }
-
-        buttonMenu.setOnClickListener {
-            goMenu()
-        }
+        buttonSpin.setOnClickListener { goSpin() }
+        buttonMenu.setOnClickListener { goMenu() }
         buttonBet.setOnClickListener {
-
+            showDialogBet()
+            tvBetDefault()
         }
     }
 
-    private fun startGameSpin(){
-        lifecycleScope.launch {
-            spinLinesSlots(slot1, slot2, slot3, 120)
-            spinLinesSlots(slot4, slot5, slot6, 110)
-            spinLinesSlots(slot7, slot8, slot9, 100)
+    private fun goSpin() {
+        if (coins > bet) {
+            coins -= bet
+            if (coins >= 0) {
+                tvCoinsDefault()
+                startGameSpin()
+            } else {
+                showDialogGameOver()
+            }
+        } else {
+            showToast("Not enough coins")
         }
+    }
+
+    private fun startGameSpin() {
+        spinLinesSlots(slot1, slot2, slot3, 120, false)
+        spinLinesSlots(slot4, slot5, slot6, 110, false)
+        spinLinesSlots(slot7, slot8, slot9, 100, true)
     }
 
     private fun spinLinesSlots(
         tvSlot1: TextView,
         tvSlot2: TextView,
         tvSlot3: TextView,
-        count: Long
+        count: Long,
+        lostLine: Boolean
     ) {
+        clickableButton(false)
 
         anim(tvSlot1, count)
         anim(tvSlot2, count)
@@ -111,17 +136,19 @@ class GameActivity : AppCompatActivity() {
                 clearAnim(tvSlot2)
                 clearAnim(tvSlot3)
 
-                showToast()
+                if (lostLine) {
+                    val rewardCoins = (0..bet * 2).random()
+                    showToast("Your reward $rewardCoins coins")
+                    coins += rewardCoins
+                    tvCoinsDefault()
+                    clickableButton(true)
+                }
             }
         }
         timer.start()
     }
 
-    private fun slotsTvImageRandom(
-        tvSlot1: TextView,
-        tvSlot2: TextView,
-        tvSlot3: TextView
-    ) {
+    private fun slotsTvImageRandom(tvSlot1: TextView, tvSlot2: TextView, tvSlot3: TextView) {
         tvSlot1.text = slotsTextImg.random()
         tvSlot2.text = slotsTextImg.random()
         tvSlot3.text = slotsTextImg.random()
@@ -142,18 +169,84 @@ class GameActivity : AppCompatActivity() {
         tv.clearAnimation()
     }
 
-    private fun showToast() {
-        val toast = Toast.makeText(
-            this@GameActivity,
-            "Your winnings: N",
-            Toast.LENGTH_SHORT
+    private fun clickableButton(status: Boolean) {
+        buttonBet.isClickable = status
+        buttonSpin.isClickable = status
+        buttonMenu.isClickable = status
+    }
+
+    private fun tvCoinsDefault() {
+        txtCoins.text = String.format(
+            application.resources.getString(R.string.your_coins_n),
+            coins
         )
-        toast.setGravity(Gravity.CENTER, 0, 0)
-        toast.show()
+    }
+
+    private fun tvBetDefault() {
+        txtBet.text = String.format(
+            application.resources.getString(R.string.your_bet_n),
+            bet
+        )
+    }
+
+    private fun showDialogBet() {
+        val dialog = AlertDialog.Builder(this)
+        with(dialog) {
+            setTitle("Bet")
+            val input = EditText(this@GameActivity)
+            input.hint = "Enter your Bet"
+            input.gravity = Gravity.CENTER
+            input.inputType = InputType.TYPE_CLASS_NUMBER
+            dialog.setView(input)
+            setPositiveButton(
+                "Ok"
+            ) { _, _ ->
+                bet = input.text.toString().toInt()
+                tvBetDefault()
+            }
+            show()
+        }
+    }
+
+    private fun showDialogGameOver() {
+        val dialog = AlertDialog.Builder(this)
+        with(dialog) {
+            setTitle("Game Over")
+            setMessage("Your coins have run out")
+            setPositiveButton(
+                "Ok"
+            ) { _, _ ->
+                goMenu()
+            }
+            show()
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this@GameActivity, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun goMenu() {
         val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        intent.putExtra(COINS, coins)
+        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP))
+    }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this).apply {
+            setTitle("Confirmation")
+            setMessage("Are you sure you want to quit the App?")
+            setPositiveButton("Yes") { _, _ ->
+                finishAffinity()
+                exitProcess(0)
+            }
+            setNegativeButton("Oh, no!") { _, _ ->
+                Toast.makeText(
+                    this@GameActivity, "Thank you",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            setCancelable(true)
+        }.create().show()
     }
 }

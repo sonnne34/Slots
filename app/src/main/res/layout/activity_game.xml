@@ -11,6 +11,7 @@
     tools:context=".GameActivity">
 
     <TextView
+        android:id="@+id/txt_coins_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -229,6 +230,14 @@
             app:layout_constraintTop_toBottomOf="@+id/view_h_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/txt_bet_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/your_bet_n"
+        android:textColor="@color/primary_dark"
+        android:textSize="16sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -256,14 +265,13 @@
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/primary_dark"
             android:text="@string/spin"
-            android:textColor="@color/icons"/>
+            android:textColor="@color/icons" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_menu"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:backgroundTint="@color/accent"
         android:text="@string/menu"
         android:textColor="@color/icons" />
