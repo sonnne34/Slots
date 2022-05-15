@@ -1,5 +1,5 @@
 # Slots
-Game
+Game 
 
 
 ![m_Slots1](https://user-images.githubusercontent.com/60262104/168429063-3fe1dd81-5931-4185-8d30-b8ebcc60d2e8.png)
